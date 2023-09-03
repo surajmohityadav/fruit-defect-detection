@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apple Classification</title>
+    <style>
+        body {
+            background-image: url("https://wallpapershome.com/images/wallpapers/apple-2560x1440-fruit-autumn-4k-16216.jpg");
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0066cc;
+        }
+
+        p {
+            text-align: center;
+            color: red;
+        }
+
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .upload-button {
+            background-color: #0066cc;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .upload-button:hover {
+            background-color: #0055aa;
+        }
+
+        .image-preview {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .image-preview img {
+            max-width: 400px;
+            max-height: 400px;
+            border: 2px solid #0066cc;
+        }
+
+        .check-more-button {
+            display: none;
+            align-items: center;
+            background-color: #0066cc;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-left: 50px;
+        }
+
+        .check-more-button:hover {
+            background-color: #0055aa;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="image-preview" id="imagePreview">
+        <img src="https://trumpwallpapers.com/wp-content/uploads/Fruit-Wallpaper-08-1920x1080-1.jpg" alt="Default Image" id="previewImage">
+    </div>
+    <div id="resultContainer">
+        {% if not prediction and not error %}
+            <h1>Upload an Apple Image</h1>
+        {% endif %}
+        
+        {% if prediction %}
+            <h2>Prediction: {{ prediction }}</h2>
+            <button type="button" class="check-more-button" onclick="goToHome()">Check more</button>
+            <!-- You can display additional information here based on the prediction -->
+        {% endif %}
+        {% if error %}
+            <p>{{ error }}</p>
+            <button type="button" class="check-more-button" onclick="goToHome()">Check more</button>
+        {% endif %}
+
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="image" accept=".jpg, .jpeg, .png" style="display: none;" id="fileInput" onchange="previewImage(event)">
+            <label for="fileInput" class="upload-button">Choose an Image</label>
+            <button type="button" class="upload-button" onclick="uploadAndPredict()">Upload and Predict</button>
+        </form>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            const fileInput = event.target;
+            const imagePreview = document.getElementById('imagePreview');
+            const uploadedImage = document.getElementById('previewImage');
+
+            uploadedImage.style.display = 'block';
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                uploadedImage.src = e.target.result;
+                imagePreview.style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function uploadAndPredict() {
+            const formData = new FormData(document.getElementById('uploadForm'));
+            const xhr = new XMLHttpRequest();
+
+            xhr.open('POST', '/predict', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    const resultContainer = document.getElementById('resultContainer');
+                    resultContainer.innerHTML = xhr.responseText;
+
+                    // Hide the form after displaying the result
+                    const uploadForm = document.getElementById('uploadForm');
+                    uploadForm.style.display = 'none';
+
+                    // Show the "Check more" button
+                    const checkMoreButton = document.querySelector('.check-more-button');
+                    checkMoreButton.style.display = 'block';
+                }
+            };
+            xhr.send(formData);
+        }
+
+        function goToHome() {
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>
