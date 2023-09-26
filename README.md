@@ -21,14 +21,16 @@ Follow these steps to set up and run the Fruit Defect Detection web application 
    git clone https://github.com/surajmohityadav/fruit-defect-detection.git
 
 
-1. Install the required Python packages:
+2. Install the required Python packages:
 
-pip install -r requirements.txt
+   ```bash
+   pip install -r requirements.txt
 
 
-2. Run the Flask application:
+3. Run the Flask application:
 
-python app.py
+  ```bash
+    python app.py
 
 
 Access the application in your web browser at http://localhost:5000.
