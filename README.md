@@ -29,8 +29,9 @@ Follow these steps to set up and run the Fruit Defect Detection web application 
 
 3. Run the Flask application:
 
-  ```bash
-    python app.py
+   ```bash
+   python app.py
+
 
 
 Access the application in your web browser at http://localhost:5000.
