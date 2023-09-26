@@ -5,7 +5,16 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 
 app = Flask(__name__)
-model = load_model('apple_classification_model.h5')
+
+# Define model paths for each fruit
+model_paths = {
+    'apple': 'apple_classification_model.h5',
+    'banana': 'banana_classification_model.h5',
+    'orange': 'orange_classification_model.h5'
+}
+
+# Load models for each fruit
+models = {fruit: load_model(path) for fruit, path in model_paths.items()}
 
 # Define a function to preprocess the uploaded image
 def preprocess_image(image_path):
@@ -23,12 +32,14 @@ def index():
 def predict():
     try:
         uploaded_file = request.files['image']
+        selected_fruit = request.form['fruit']  # Get the selected fruit option
+
         if uploaded_file.filename != '':
             image_path = os.path.join('uploads', uploaded_file.filename)
             uploaded_file.save(image_path)
 
             processed_image = preprocess_image(image_path)
-            prediction = model.predict(processed_image)
+            prediction = models[selected_fruit].predict(processed_image)
 
             if prediction[0][0] > 0.5:
                 result = 'Rotten'
