@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Apple Classification</title>
+    <title>Fruit Classification</title>
     <style>
         body {
             background-image: url("https://wallpapers.com/images/hd/2440x1440-apple-background-2440-x-1440-8hs1bdi0b4i0cf24.jpg");
@@ -79,15 +79,6 @@
         .check-more-button:hover {
             background-color: #0055aa;
         }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-
-        select {
-            padding: 10px;
-            font-size: 16px;
-        }
     </style>
 </head>
 <body>
@@ -95,14 +86,16 @@
         <img src="https://trumpwallpapers.com/wp-content/uploads/Fruit-Wallpaper-08-1920x1080-1.jpg" alt="Default Image" id="previewImage">
     </div>
     <div id="resultContainer">
-        {% if not prediction and not error %}
+        {% if not prediction and not freshness and not error %}
             <h1>Upload an Image</h1>
         {% endif %}
         
         {% if prediction %}
-            <h2>Prediction: {{ prediction }}</h2>
-            <button type="button" class="check-more-button" onclick="goToHome()">Check more</button>
-            <!-- You can display additional information here based on the prediction -->
+        <h2>Predicted Fruit : {{ prediction }}</h2>
+        <p>{{ "Fresh" if freshness > 50 else "Not Fresh" }}</p>
+        <p>Freshness percentage : {{ freshness }}%</p>
+        <button type="button" class="check-more-button" onclick="goToHome()">Check more</button>
+       
         {% endif %}
         {% if error %}
             <p>{{ error }}</p>
@@ -110,12 +103,6 @@
         {% endif %}
 
         <form id="uploadForm" enctype="multipart/form-data">
-            <label for="fruit">Select a fruit:</label>
-            <select name="fruit" id="fruit">
-                <option value="apple">Apple</option>
-                <option value="banana">Banana</option>
-                <option value="orange">Orange</option>
-            </select>
             <input type="file" name="image" accept=".jpg, .jpeg, .png" style="display: none;" id="fileInput" onchange="previewImage(event)">
             <label for="fileInput" class="upload-button">Choose an Image</label>
             <button type="button" class="upload-button" onclick="uploadAndPredict()">Upload and Predict</button>
